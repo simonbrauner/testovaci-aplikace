@@ -1,15 +1,17 @@
 {% extends "layout.html" %}
 
 
-{% block title %}
-
-index
-
-{% endblock %}
+{% block title %}index{% endblock %}
 
 
 {% block main %}
 
-<h1>TESTOVACI APLIKACE</h1>
+<h1>UZIVATELE</h1>
+
+{% for user in users %}
+
+<p>{{ user.name }}</p>
+
+{% endfor %}
 
 {% endblock %}
