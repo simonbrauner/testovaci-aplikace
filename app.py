@@ -1,8 +1,9 @@
 from flask import request, session
 from flask import render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from tools import create_app
+from tools import create_app, login_required
 from model import User
 
 app = create_app()
@@ -11,13 +12,10 @@ db = SQLAlchemy(app)
 
 
 @app.route('/')
+@login_required
 def index():
-    if 'username' in session:
-        users = User.query.all()
-        print(users)
-        return render_template('index.html', users=users)
-
-    return redirect('/login')
+    users = User.query.all()
+    return render_template('index.html', users=users)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -33,10 +31,11 @@ def login():
     if not user:
         return render_template('login.html', error='uzivatel neexistuje')
 
-    if password != user.password:
+    if not check_password_hash(user.password, password):
         return render_template('login.html', error='spatne heslo')
 
-    session['username'] = username
+    session['id'] = user.id
+    print(session)
 
     return redirect('/')
 
@@ -77,7 +76,8 @@ def register():
         return render_template('register.html',
                                error='hesla nejsou stejna')
 
-    user = User(username=username, name=name, password=password)
+    user = User(username=username, name=name,
+                password=generate_password_hash(password))
 
     db.session.add(user)
     db.session.commit()

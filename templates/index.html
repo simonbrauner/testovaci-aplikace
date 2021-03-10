@@ -10,7 +10,16 @@
 
 {% for user in users %}
 
-<p>{{ user.name }}</p>
+<p>
+  {% if user.id == session.id %}
+  
+  <strong>{{ user.name }}</strong>
+
+  {% else %}
+
+  {{ user.name }}
+
+  {% endif %}
 
 {% endfor %}
 

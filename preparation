@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo 'creating virtual environment...'
+python3 -m venv venv
+
+echo 'entering virtual environment...'
+. venv/bin/activate
+
+echo 'installing dependencies...'
+python -m pip install -r 'requirements.txt'
+
+echo 'creating secret key for sessions...'
+python3 key_generator.py
+
+echo 'creating database...'
+python3 model.py
+
+echo 'leaving virtual environment...'
+deactivate
