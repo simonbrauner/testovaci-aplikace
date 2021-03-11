@@ -17,6 +17,40 @@
   </head>
 
   <body>
+    <nav class='navbar navbar-expand-sm bg-primary navbar-dark'>
+      {% if session.id %}
+
+      <ul class='navbar-nav me-auto'>
+	<a class='navbar-brand' href='/'>index</a>
+      </ul>
+
+      {% endif %}
+
+      <ul class='navbar-nav ms-auto'>
+	{% if session.id %}
+
+	<li class='nav-item'>
+	  <a class='nav-link' href='/profile'>uzivatel</a>
+	</li>
+
+	<li class='nav-item'>
+	  <a class='nav-link' href='/logout'>odhlasit</a>
+	</li>
+
+	{% else %}
+
+	<li class='nav-item'>
+	  <a class='nav-link' href='/login'>login</a>
+	</li>
+
+	<li class='nav-item'>
+	  <a class='nav-link' href='/register'>register</a>
+	</li>
+
+	{% endif %}
+      </ul>
+    </nav>
+
     <main class='text-center'>{% block main %}{% endblock %}</main>
   </body>
 </html>

@@ -18,6 +18,12 @@ def index():
     return render_template('index.html', users=users)
 
 
+@app.route('/profile')
+def profile():
+    user = User.query.filter_by(id=session['id']).first()
+    return render_template('profile.html', user=user)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -35,7 +41,6 @@ def login():
         return render_template('login.html', error='spatne heslo')
 
     session['id'] = user.id
-    print(session)
 
     return redirect('/')
 
