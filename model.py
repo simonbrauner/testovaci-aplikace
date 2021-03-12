@@ -1,10 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-from tools import create_app
-
-app = create_app()
-
-db = SQLAlchemy(app)
+from config import db
 
 
 class User(db.Model):
@@ -12,6 +6,15 @@ class User(db.Model):
     username = db.Column(db.String(128), unique=True, nullable=False)
     name = db.Column(db.String(128), nullable=False)
     password = db.Column(db.String(128), nullable=False)
+
+
+class Test(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                           nullable=False)
+    creator = db.relationship('User', backref='tests', lazy=True)
 
 
 if __name__ == '__main__':

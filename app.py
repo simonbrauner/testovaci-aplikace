@@ -1,24 +1,35 @@
 from flask import request, session
 from flask import render_template, redirect
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from tools import create_app, login_required
-from model import User
+from config import app, db
+from model import User, Test
+from tools import login_required
 
-app = create_app()
 
-db = SQLAlchemy(app)
+@app.route('/new_test', methods=['POST'])
+@login_required
+def new_test():
+    user = User.query.filter_by(id=session['id']).first()
+    name = request.form.get('name')
+
+    user.tests.append(Test(name=name))
+    db.session.add(user)
+
+    db.session.commit()
+
+    return redirect('/')
 
 
 @app.route('/')
 @login_required
 def index():
-    users = User.query.all()
-    return render_template('index.html', users=users)
+    tests = Test.query.all()
+    return render_template('index.html', tests=tests)
 
 
 @app.route('/profile')
+@login_required
 def profile():
     user = User.query.filter_by(id=session['id']).first()
     return render_template('profile.html', user=user)

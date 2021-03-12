@@ -6,22 +6,30 @@
 
 {% block main %}
 
-<h1>UZIVATELE</h1>
+<h1>TESTY</h1>
 
-{% for user in users %}
+{% for test in tests %}
 
 <p>
-  {% if user.id == session.id %}
+  {% if test.creator_id == session.id %}
   
-  <strong>{{ user.name }}</strong>
+  <strong>{{ test.name }}</strong>
 
   {% else %}
 
-  {{ user.name }}
+  {{ test.name }}
 
   {% endif %}
 </p>
 
 {% endfor %}
+
+<form action='new_test' method='post'>
+  <div class='form-group'>
+    <input type='text' name='name' placeholder='Jmeno testu' autocomplete='off' autofocus required>
+  </div>
+
+  <button type='submit' class='btn btn-primary'>Vytvorit</button>
+</form>
 
 {% endblock %}
