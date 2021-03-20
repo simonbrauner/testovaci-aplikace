@@ -1,14 +1,36 @@
 function newAnswer(question_number, title) {
     // adding answer
     let answer = document.createElement('LI');
-    answer.appendChild(document.createTextNode(title));
 
-    // correct??
+    // title
+    let answer_title = document.createElement('STRONG');
+    answer_title.appendChild(document.createTextNode(title));
+    answer.appendChild(answer_title);
+
+    // correct
+    let correct_button = document.createElement('BUTTON');
+    correct_button.className = 'btn incorrect';
+    correct_button.innerHTML = '&cross;';
+    correct_button.style.backgroundColor = '#ecb0b5';
+    answer.insertBefore(correct_button, answer_title);
+
+    // changing the correctness
+    correct_button.addEventListener('click', function() {
+	if (correct_button.className == 'btn incorrect') {
+	    correct_button.className = 'btn correct';
+	    correct_button.innerHTML = '&check;';
+	    correct_button.style.backgroundColor = '#c5ecb0';
+	} else {
+	    correct_button.className = 'btn incorrect';
+	    correct_button.innerHTML = '&cross;';
+	    correct_button.style.backgroundColor = '#ecb0b5';
+	}
+    });
 
     // delete button
     let delete_button = document.createElement('BUTTON');
     delete_button.className = 'btn';
-    delete_button.innerHTML = '&times';
+    delete_button.innerHTML = '&times;';
     answer.appendChild(delete_button);
 
     // deleting with the button
