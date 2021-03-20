@@ -4,7 +4,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import app, db
 from model import User, Test
-from tools import login_required
+from tools import login_required, creator_only
+
+
+@app.route('/editor/<int:test_id>')
+@creator_only
+def editor(test_id):
+    return render_template('editor.html', test_id=test_id)
 
 
 @app.route('/new_test', methods=['POST'])
