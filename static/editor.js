@@ -53,12 +53,13 @@ function newQuestion(title) {
     // title
     let question_title = document.createElement('STRONG');
     question_title.appendChild(document.createTextNode(title));
+    question.appendChild(question_title);
 
     // delete button
     let delete_button = document.createElement('BUTTON');
     delete_button.className = 'btn';
     delete_button.innerHTML = '&times';
-    question_title.appendChild(delete_button);
+    question.appendChild(delete_button);
 
     // deleting
     delete_button.addEventListener('click', function() {
@@ -119,5 +120,44 @@ document.addEventListener('DOMContentLoaded', function() {
 	    newQuestion(title);
 	    document.getElementById('question-title').value = '';
 	}
+    });
+
+    // saving the test
+    document.getElementById('save').addEventListener('click', function() {
+	// general test info
+	let test = {
+	    id: document.getElementsByClassName('test-title')[0].id,
+	    questions: []
+	}
+
+	// questions
+	let questions = document.getElementsByClassName('question');
+
+	for (let i = 0; i < questions.length; i++) {
+	    let question = {
+		title: questions[i].childNodes[1].innerHTML,
+		answers: []
+	    }
+
+	    // answers
+	    let answers = document.getElementsByClassName(i)[0].childNodes;
+
+	    for (let j = 0; j < answers.length - 1; j++) {
+		let nodes = answers[j].childNodes;
+
+		let answer = {
+		    title: nodes[1].innerHTML,
+		    correct: nodes[0].className == 'btn correct'
+		}
+
+		question.answers.push(answer);
+	    }
+
+	    test.questions.push(question);
+	}
+
+	// submitting
+	document.getElementById('secret-input').value = JSON.stringify(test);
+	document.getElementById('secret-button').click()
     });
 });

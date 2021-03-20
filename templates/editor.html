@@ -13,7 +13,7 @@
 
 {% block main %}
 
-<h1>test cislo {{ test_id }}</h1>
+<h1 class='test-title' id='{{ test_id }}'>test cislo {{ test_id }}</h1>
 
 <ol id='questions'></ol>
 
@@ -25,8 +25,8 @@
 <button class='btn btn-primary' id='save'>Ulozit</button>
 
 <form>
-  <input id='secret-input' type='text' name='test-json' placeholder='*secret*' required>
-  <button id='secret-button' type='submit'></button>
+  <input id='secret-input' type='text' name='test-json' placeholder='*secret*' required hidden='true'>
+  <button id='secret-button' type='submit' hidden='true'></button>
 </form>
 
 {% endblock %}
