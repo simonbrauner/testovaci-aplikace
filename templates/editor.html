@@ -4,8 +4,29 @@
 {% block title %}editing {{ test_id }}.{% endblock %}
 
 
+{% block scripts %}
+
+<script src='/static/editor.js'></script>
+
+{% endblock %}
+
+
 {% block main %}
 
-<h1>test number {{ test_id }}</h1>
+<h1>test cislo {{ test_id }}</h1>
+
+<ol id='questions'></ol>
+
+<input id='question-title'>
+<button class='btn btn-primary' id='new-question'>Nova otazka</button>
+
+<hr>
+
+<button class='btn btn-primary' id='save'>Ulozit</button>
+
+<form>
+  <input id='secret-input' type='text' name='test-json' placeholder='*secret*' required>
+  <button id='secret-button' type='submit'></button>
+</form>
 
 {% endblock %}
