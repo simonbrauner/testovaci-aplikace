@@ -2,15 +2,53 @@ from flask import request, session
 from flask import render_template, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from json import loads
+
 from config import app, db
-from model import User, Test
+from model import User, Test, Question, Answer
 from tools import login_required, creator_only
+
+
+@app.route('/save_test/<int:test_id>', methods=['POST'])
+@creator_only
+def save_test(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+
+    # deleting old
+    for question in test.questions:
+        for answer in question.answers:
+            db.session.delete(answer)
+
+        db.session.delete(question)
+
+    db.session.commit()
+
+    # adding new
+    test_json = request.form.get('test-json')
+    test_dict = loads(test_json)
+
+    for question_dict in test_dict['questions']:
+        question = Question(name=question_dict['title'])
+
+        for answer_dict in question_dict['answers']:
+            question.answers.append(Answer(name=answer_dict['title'],
+                                           correct=answer_dict['correct']))
+
+        test.questions.append(question)
+
+    db.session.add(test)
+
+    db.session.commit()
+
+    return redirect('/')
 
 
 @app.route('/editor/<int:test_id>')
 @creator_only
 def editor(test_id):
-    return render_template('editor.html', test_id=test_id)
+    test = Test.query.filter_by(id=test_id).first()
+
+    return render_template('editor.html', test=test)
 
 
 @app.route('/new_test', methods=['POST'])

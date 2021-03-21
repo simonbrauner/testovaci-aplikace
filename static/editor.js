@@ -1,4 +1,9 @@
-function newAnswer(question_number, title) {
+function questionCount() {
+    return document.getElementsByClassName('question').length;
+}
+
+
+function newAnswer(question_number, title, correct) {
     // adding answer
     let answer = document.createElement('LI');
 
@@ -27,6 +32,11 @@ function newAnswer(question_number, title) {
 	}
     });
 
+    // changing to correct automatically
+    if (correct) {
+	correct_button.click()
+    }
+
     // delete button
     let delete_button = document.createElement('BUTTON');
     delete_button.className = 'btn';
@@ -47,7 +57,7 @@ function newAnswer(question_number, title) {
 function newQuestion(title) {
     // question itself
     let question = document.createElement('LI');
-    question.id = document.getElementsByClassName('question').length;
+    question.id = questionCount();
     question.className = 'question';
 
     // title
@@ -94,7 +104,7 @@ function newQuestion(title) {
 
     answer_button.addEventListener('click', function() {
 	if (answer_title.value) {
-	    newAnswer(question.id, answer_title.value);
+	    newAnswer(question.id, answer_title.value, false);
 	    answer_title.value = '';
 	}
     });
@@ -112,6 +122,7 @@ function newQuestion(title) {
     document.getElementById('questions').appendChild(question);
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
     // creating question
     document.getElementById('new-question').addEventListener('click', function() {
@@ -126,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('save').addEventListener('click', function() {
 	// general test info
 	let test = {
-	    id: document.getElementsByClassName('test-title')[0].id,
 	    questions: []
 	}
 

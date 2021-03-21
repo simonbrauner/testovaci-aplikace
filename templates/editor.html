@@ -1,19 +1,15 @@
 {% extends "layout.html" %}
 
 
-{% block title %}editing {{ test_id }}.{% endblock %}
+{% block title %}editing {{ test.id }}{% endblock %}
 
 
-{% block scripts %}
-
-<script src='/static/editor.js'></script>
-
-{% endblock %}
+{% block scripts %}<script src='/static/editor.js'></script>{% endblock %}
 
 
 {% block main %}
 
-<h1 class='test-title' id='{{ test_id }}'>test cislo {{ test_id }}</h1>
+<h1>{{ test.name }}</h1>
 
 <ol id='questions'></ol>
 
@@ -24,9 +20,23 @@
 
 <button class='btn btn-primary' id='save'>Ulozit</button>
 
-<form>
-  <input id='secret-input' type='text' name='test-json' placeholder='*secret*' required hidden='true'>
+<form action='/save_test/{{ test.id }}' method='post'>
+  <input id='secret-input' type='text' name='test-json' required hidden='true'>
   <button id='secret-button' type='submit' hidden='true'></button>
 </form>
+
+{% for question in test.questions %}
+
+<script>
+  newQuestion('{{ question.name }}');
+
+  {% for answer in question.answers %}
+  
+  newAnswer(questionCount() - 1, '{{ answer.name }}', {{ answer.correct | int }});
+
+  {% endfor %}
+</script>
+
+{% endfor %}
 
 {% endblock %}
