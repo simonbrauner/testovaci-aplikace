@@ -9,6 +9,44 @@ from model import User, Test, Question, Answer
 from tools import login_required, creator_only
 
 
+@app.route('/settings/<int:test_id>')
+@creator_only
+def settings(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+    questions = test.questions
+
+    return render_template('settings.html', test=test,
+                           questions=questions)
+
+
+@app.route('/save_settings/<int:test_id>', methods=['POST'])
+@creator_only
+def save_settings(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+
+    parts = request.form.get('parts')
+
+    if parts:
+        try:
+            parts = int(parts)
+
+            assert parts > 0
+            assert parts <= len(test.questions)
+
+            test.parts = parts
+            db.session.add(test)
+
+            db.session.commit()
+
+        except ValueError:
+            return redirect(f'/settings/{test_id}')
+
+        except AssertionError:
+            return redirect(f'/settings/{test_id}')
+
+    return redirect('/')
+
+
 @app.route('/save_test/<int:test_id>', methods=['POST'])
 @creator_only
 def save_test(test_id):

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+
+{% block title %}nastaveni{% endblock %}
+
+
+{% block main %}
+
+<h1>{{ test.name }}</h1>
+
+<p>celkem otazek: {{ questions | length }}</p>
+<p>
+  otazek v testu:
+
+  {% if test.parts %}
+
+  {{ test.parts }}
+
+  {% else %}
+
+  {{ questions | length }}
+
+  {% endif %}
+</p>
+
+<form action='/save_settings/{{ test.id }}' method='post'>
+  <div class='form-group'>
+    <input type='text' name='parts' placeholder='Otazek v testu' autocomplete='off'>
+  </div>
+
+  <button type='submit' class='btn btn-primary'>Ulozit</button>
+</form>
+
+{% endblock %}

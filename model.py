@@ -12,6 +12,8 @@ class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
 
+    parts = db.Column(db.Integer, default=0)
+
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                            nullable=False)
     creator = db.relationship('User', backref='tests', lazy=True)
