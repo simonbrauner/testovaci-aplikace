@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+
+{% block title %}viewing {{ test.id }}{% endblock %}
+
+
+{% block main %}
+
+<h1>{{ test.name }}</h1>
+
+<form>
+  <ol>
+    {% for question in questions %}
+
+    <li>
+      <strong>{{ question.name }}</strong>
+
+      {% for answer in question.answers %}
+
+      <div>
+	<input type='radio' name='{{ question.id }}' id='{{ answer.id }}'>
+	<label for='{{ answer.id }}'>{{ answer.name }}</label>
+      </div>
+
+      {% endfor %}
+    </li>
+
+    {% endfor %}
+  </ol>
+</form>
+
+{% endblock %}

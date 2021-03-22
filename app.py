@@ -3,10 +3,21 @@ from flask import render_template, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from json import loads
+from random import shuffle
 
 from config import app, db
 from model import User, Test, Question, Answer
 from tools import login_required, creator_only
+
+
+@app.route('/preview/<int:test_id>')
+@creator_only
+def preview(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+    questions = test.questions[:test.parts]
+    shuffle(questions)
+
+    return render_template('test.html', test=test, questions=questions)
 
 
 @app.route('/settings/<int:test_id>')
@@ -73,6 +84,10 @@ def save_test(test_id):
                                            correct=answer_dict['correct']))
 
         test.questions.append(question)
+
+    # automatic testion count
+    if test.parts == 0 or test.parts > len(test_dict['questions']):
+        test.parts = len(test_dict['questions'])
 
     db.session.add(test)
 
