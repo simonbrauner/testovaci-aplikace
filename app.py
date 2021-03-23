@@ -10,14 +10,20 @@ from model import User, Test, Question, Answer
 from tools import login_required, creator_only
 
 
-@app.route('/preview/<int:test_id>')
-@creator_only
-def preview(test_id):
+@app.route('/test/<int:test_id>', methods=['GET', 'POST'])
+@login_required
+def test(test_id):
+    user = User.query.filter_by(id=session['id']).first()
     test = Test.query.filter_by(id=test_id).first()
-    questions = test.questions[:test.parts]
-    shuffle(questions)
 
-    return render_template('test.html', test=test, questions=questions)
+    if request.method == 'GET':
+        questions = test.questions[:test.parts]
+        shuffle(questions)
+
+        return render_template('test.html', user=user,
+                               test=test, questions=questions)
+
+    return redirect(f'/test/{test_id}')
 
 
 @app.route('/settings/<int:test_id>')

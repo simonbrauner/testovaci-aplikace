@@ -13,7 +13,7 @@
 <p>
   {% if test.creator_id == session.id %}
 
-  <a href='preview/{{ test.id }}'>nahled</a>
+  <a href='/test/{{ test.id }}'>nahled</a>
   
   <strong>{{ test.name }}</strong>
 
@@ -22,6 +22,8 @@
 
   {% else %}
 
+  <a href='/test/{{ test.id }}'>vyplnit</a>
+
   {{ test.name }}
 
   {% endif %}
@@ -29,7 +31,7 @@
 
 {% endfor %}
 
-<form action='new_test' method='post'>
+<form action='/new_test' method='post'>
   <div class='form-group'>
     <input type='text' name='name' placeholder='Jmeno testu' autocomplete='off' autofocus required>
   </div>

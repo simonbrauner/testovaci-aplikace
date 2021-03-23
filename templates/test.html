@@ -8,7 +8,7 @@
 
 <h1>{{ test.name }}</h1>
 
-<form>
+<form action='/test/{{ test.id }}' method='post'>
   <ol>
     {% for question in questions %}
 
@@ -27,6 +27,12 @@
 
     {% endfor %}
   </ol>
+
+  {% if user.id != test.creator_id %}
+
+  <button type='submit' class='btn btn-primary'>Odevzdat</button>
+
+  {% endif %}
 </form>
 
 {% endblock %}
