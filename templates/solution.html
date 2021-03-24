@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+
+{% block title %}vysledky{% endblock %}
+
+
+{% block main %}
+
+<h1>{{ test.name }}</h1>
+
+<ol>
+    {% for response in responses %}
+
+    <li>
+      <strong>{{ response.question.name }}</strong>
+
+      {% for answer in response.question.answers %}
+
+      <div>
+	{% if answer == response.answer %}
+
+	<input type='radio' name='{{ response.question.id }}' id='{{ answer.id }}' checked disabled>
+
+	{% else %}
+	
+	<input type='radio' name='{{ response.question.id }}' id='{{ answer.id }}' disabled>
+
+	{% endif %}
+
+	{% if answer != response.answer and answer.correct %}
+
+	<label for='{{ answer.id }}' style='color: green;'>{{ answer.name }}</label>
+
+	{% else %}
+
+	<label for='{{ answer.id }}'>{{ answer.name }}</label>
+
+	{% endif %}
+      </div>
+
+      {% endfor %}
+    </li>
+
+    {% endfor %}
+</ol>
+
+<div class='progress'>
+  <div class='progress-bar' style='width:{{ 100 * submit.score / test.parts }}%'>
+    {{ 100 * submit.score / test.parts }}%
+  </div>
+</div>
+
+{% endblock %}

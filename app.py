@@ -10,6 +10,22 @@ from model import User, Test, Question, Answer, Submit, Response
 from tools import login_required, creator_only
 
 
+@app.route('/solution/<int:test_id>')
+@login_required
+def solution(test_id):
+    user = User.query.filter_by(id=session['id']).first()
+    test = Test.query.filter_by(id=test_id).first()
+    submit = Submit.query.filter_by(test=test, taker=user).first()
+
+    if not submit:
+        return redirect('/')
+
+    responses = submit.responses
+
+    return render_template('solution.html', test=test,
+                           submit=submit, responses=responses)
+
+
 @app.route('/results/<int:test_id>')
 @creator_only
 def results(test_id):
@@ -27,33 +43,39 @@ def test(test_id):
     user = User.query.filter_by(id=session['id']).first()
     test = Test.query.filter_by(id=test_id).first()
 
-    submit = Submit.query.filter_by(test_id=test.id,
-                                    taker_id=user.id).first()
+    submit = Submit.query.filter_by(test=test, taker=user).first()
 
     if request.method == 'GET':
         if not submit:
             questions = test.questions.copy()
+
+            if not questions:
+                return redirect('/')
+
             shuffle(questions)
             questions = questions[:test.parts]
 
-            submit = Submit(test=test, taker=user)
+            if user.id != test.creator_id:
+                submit = Submit(test=test, taker=user)
 
-            for question in questions:
-                submit.responses.append(Response(question_id=question.id))
+                for question in questions:
+                    submit.responses.append(Response(question_id=question.id))
 
-            db.session.add(submit)
+                    db.session.add(submit)
 
-            db.session.commit()
+                    db.session.commit()
+
+            return render_template('test.html', user=user,
+                                   test=test, questions=questions)
+
+        if submit.score is None:
+            questions = [response.question for response in submit.responses]
 
             return render_template('test.html', user=user,
                                    test=test, questions=questions)
 
         else:
-            questions = [response.question for response in submit.responses]
-
-            return render_template('test.html', user=user,
-                                   test=test, questions=questions,
-                                   submit=submit)
+            return redirect(f'/solution/{test_id}')
 
     score = 0
 
