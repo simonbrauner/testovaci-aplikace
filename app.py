@@ -10,6 +10,17 @@ from model import User, Test, Question, Answer, Submit, Response
 from tools import login_required, creator_only
 
 
+@app.route('/results/<int:test_id>')
+@creator_only
+def results(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+    submits = sorted(test.submits, reverse=True,
+                     key=lambda x: (x.score is not None, x.score))
+
+    return render_template('results.html', test=test,
+                           submits=submits)
+
+
 @app.route('/test/<int:test_id>', methods=['GET', 'POST'])
 @login_required
 def test(test_id):

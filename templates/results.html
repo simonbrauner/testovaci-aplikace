@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+
+{% block title %}vysledky{% endblock %}
+
+
+{% block main %}
+
+<div class='container'>
+  <h1>{{ test.name }}</h1>
+  
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+	<th>Uzivatel</th>
+	<th>Pocet bodu</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for submit in submits %}
+
+      <tr>
+	<td>{{ submit.taker.name }}</td>
+
+	{% if submit.score %}
+
+	<td>{{ submit.score }}</td>
+
+	{% else %}
+
+	<td>-</td>
+
+	{% endif %}
+      </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

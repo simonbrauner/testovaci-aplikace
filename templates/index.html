@@ -13,6 +13,7 @@
 <p>
   {% if test.creator_id == session.id %}
 
+  <a href='/results/{{ test.id }}'>vysledky</a>
   <a href='/test/{{ test.id }}'>nahled</a>
   
   <strong>{{ test.name }}</strong>
