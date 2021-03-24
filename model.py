@@ -49,6 +49,24 @@ class Submit(db.Model):
                          nullable=False)
     taker = db.relationship('User', backref='submits')
 
+    score = db.Column(db.Integer, nullable=True)
+
+
+class Response(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    submit_id = db.Column(db.Integer, db.ForeignKey('submit.id'),
+                          nullable=False)
+    submit = db.relationship('Submit', backref='responses')
+
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'),
+                            nullable=False)
+    question = db.relationship('Question')
+
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'),
+                          nullable=True)  # correct_answer_id??
+    answer = db.relationship('Answer')
+
 
 if __name__ == '__main__':
     db.create_all()

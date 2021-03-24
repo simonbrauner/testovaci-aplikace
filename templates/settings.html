@@ -31,4 +31,11 @@
   <button type='submit' class='btn btn-primary'>Ulozit</button>
 </form>
 
+<p>vstup ze souboru</p>
+
+<form action='/save_test/{{ test.id }}' method='post'>
+  <input type='text' name='test-json' placeholder='JSON' autocomplete='false' required>
+  <button class='btn btn-primary' type='submit'>Ulozit</button>
+</form>
+
 {% endblock %}

@@ -6,7 +6,7 @@ from json import loads
 from random import shuffle
 
 from config import app, db
-from model import User, Test, Question, Answer, Submit
+from model import User, Test, Question, Answer, Submit, Response
 from tools import login_required, creator_only
 
 
@@ -16,24 +16,52 @@ def test(test_id):
     user = User.query.filter_by(id=session['id']).first()
     test = Test.query.filter_by(id=test_id).first()
 
+    submit = Submit.query.filter_by(test_id=test.id,
+                                    taker_id=user.id).first()
+
     if request.method == 'GET':
-        submit = Submit.query.filter_by(test_id=test.id,
-                                        taker_id=user.id).first()
+        if not submit:
+            questions = test.questions.copy()
+            shuffle(questions)
+            questions = questions[:test.parts]
 
-        questions = test.questions.copy()
-        shuffle(questions)
-        questions = questions[:test.parts]
+            submit = Submit(test=test, taker=user)
 
-        return render_template('test.html', user=user,
-                               test=test, questions=questions,
-                               submit=submit)
+            for question in questions:
+                submit.responses.append(Response(question_id=question.id))
 
-    submit = Submit(test=test, taker=user)
+            db.session.add(submit)
+
+            db.session.commit()
+
+            return render_template('test.html', user=user,
+                                   test=test, questions=questions)
+
+        else:
+            questions = [response.question for response in submit.responses]
+
+            return render_template('test.html', user=user,
+                                   test=test, questions=questions,
+                                   submit=submit)
+
+    score = 0
+
+    for response in submit.responses:
+        answer_id = request.form.get(str(response.question_id))
+
+        if answer_id:
+            answer = Answer.query.filter_by(id=answer_id).first()
+
+            if answer.correct:
+                score += 1
+
+            response.answer = answer
+
+    submit.score = score
+
     db.session.add(submit)
 
     db.session.commit()
-
-    # individual questions
 
     return redirect(f'/test/{test_id}')
 
