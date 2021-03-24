@@ -28,7 +28,7 @@
     {% endfor %}
   </ol>
 
-  {% if user.id != test.creator_id %}
+  {% if user.id != test.creator_id and not submit %}
 
   <button type='submit' class='btn btn-primary'>Odevzdat</button>
 

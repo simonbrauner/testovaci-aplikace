@@ -6,7 +6,7 @@ from json import loads
 from random import shuffle
 
 from config import app, db
-from model import User, Test, Question, Answer
+from model import User, Test, Question, Answer, Submit
 from tools import login_required, creator_only
 
 
@@ -17,11 +17,23 @@ def test(test_id):
     test = Test.query.filter_by(id=test_id).first()
 
     if request.method == 'GET':
-        questions = test.questions[:test.parts]
+        submit = Submit.query.filter_by(test_id=test.id,
+                                        taker_id=user.id).first()
+
+        questions = test.questions.copy()
         shuffle(questions)
+        questions = questions[:test.parts]
 
         return render_template('test.html', user=user,
-                               test=test, questions=questions)
+                               test=test, questions=questions,
+                               submit=submit)
+
+    submit = Submit(test=test, taker=user)
+    db.session.add(submit)
+
+    db.session.commit()
+
+    # individual questions
 
     return redirect(f'/test/{test_id}')
 

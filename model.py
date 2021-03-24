@@ -38,5 +38,17 @@ class Answer(db.Model):
     question = db.relationship('Question', backref='answers')
 
 
+class Submit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id'),
+                        nullable=False)
+    test = db.relationship('Test', backref='submits')
+
+    taker_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                         nullable=False)
+    taker = db.relationship('User', backref='submits')
+
+
 if __name__ == '__main__':
     db.create_all()

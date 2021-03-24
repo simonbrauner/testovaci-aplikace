@@ -100,7 +100,7 @@ function newQuestion(title) {
 
     let answer_button = document.createElement('BUTTON');
     answer_button.className = 'btn btn-primary';
-    answer_button.appendChild(document.createTextNode('Nova odpoved'));
+    answer_button.appendChild(document.createTextNode('Pridat odpoved'));
 
     answer_button.addEventListener('click', function() {
 	if (answer_title.value) {
