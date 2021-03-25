@@ -8,28 +8,59 @@
 
 <h1>{{ test.name }}</h1>
 
-<p>celkem otazek: {{ questions | length }}</p>
-<p>
-  otazek v testu:
+<form action='/save_settings/{{ test.id }}' method='post'>
+
+  <label for='length'>celkem otazek: </label>
+  <input type='text' value='{{ questions | length }}' id='length' readonly>
+
+  <br>
+
+  <label for='parts'>otazek v testu: </label>
 
   {% if test.parts %}
 
-  {{ test.parts }}
+  <input type='text' name='parts' autocomplete='off' value='{{ test.parts }}' id='parts'>
 
   {% else %}
 
-  {{ questions | length }}
+  <input type='text' name='parts' autocomplete='off' value='{{ questions | length }}' id='parts'>
 
   {% endif %}
-</p>
 
-<form action='/save_settings/{{ test.id }}' method='post'>
-  <div class='form-group'>
-    <input type='text' name='parts' placeholder='Otazek v testu' autocomplete='off'>
-  </div>
+  <br>
+
+  <label for='solution'>zobrazovat vysledky testu: </label>
+
+  {% if test.solution %}
+
+  <input type='checkbox' name='solution' id='solution' checked>
+
+  {% else %}
+
+  <input type='checkbox' name='solution' id='solution'>
+
+  {% endif %}
+
+  <br>
+
+  <label for='access'>test je pristupny: </label>
+
+  {% if test.access %}
+
+  <input type='checkbox' name='access' id='access' checked>
+
+  {% else %}
+
+  <input type='checkbox' name='access' id='access'>
+
+  {% endif %}
+
+  <br>
 
   <button type='submit' class='btn btn-primary'>Ulozit</button>
 </form>
+
+<hr>
 
 <p>vstup ze souboru</p>
 

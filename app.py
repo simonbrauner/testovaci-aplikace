@@ -115,6 +115,8 @@ def save_settings(test_id):
     test = Test.query.filter_by(id=test_id).first()
 
     parts = request.form.get('parts')
+    solution = False
+    access = False
 
     if parts:
         try:
@@ -124,15 +126,25 @@ def save_settings(test_id):
             assert parts <= len(test.questions)
 
             test.parts = parts
-            db.session.add(test)
-
-            db.session.commit()
 
         except ValueError:
             return redirect(f'/settings/{test_id}')
 
         except AssertionError:
             return redirect(f'/settings/{test_id}')
+
+    if bool(request.form.get('solution')) != test.solution:
+        test.solution = not test.solution
+        solution = True
+
+    if bool(request.form.get('access')) != test.access:
+        test.access = not test.access
+        access = True
+
+    if any([parts, solution, access]):
+        db.session.add(test)
+
+        db.session.commit()
 
     return redirect('/')
 

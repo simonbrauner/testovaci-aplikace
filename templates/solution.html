@@ -27,7 +27,7 @@
 
 	{% endif %}
 
-	{% if answer != response.answer and answer.correct %}
+	{% if answer != response.answer and answer.correct and test.solution %}
 
 	<label for='{{ answer.id }}' style='color: green;'>{{ answer.name }}</label>
 
@@ -44,10 +44,14 @@
     {% endfor %}
 </ol>
 
+{% if test.solution %}
+
 <div class='progress'>
   <div class='progress-bar' style='width:{{ 100 * submit.score / test.parts }}%'>
     {{ 100 * submit.score / test.parts }}%
   </div>
 </div>
+
+{% endif %}
 
 {% endblock %}

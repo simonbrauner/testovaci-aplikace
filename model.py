@@ -13,6 +13,8 @@ class Test(db.Model):
     name = db.Column(db.String(128), nullable=False)
 
     parts = db.Column(db.Integer, default=0)
+    solution = db.Column(db.Boolean, default=1)
+    access = db.Column(db.Boolean, default=0)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                            nullable=False)
