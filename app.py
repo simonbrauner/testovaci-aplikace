@@ -45,6 +45,9 @@ def test(test_id):
 
     submit = Submit.query.filter_by(test=test, taker=user).first()
 
+    if not test.access and user.id != test.creator_id:
+        return redirect('/')
+
     if request.method == 'GET':
         if not submit:
             questions = test.questions.copy()

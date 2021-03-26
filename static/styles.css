@@ -1,3 +1,7 @@
 h1 {
     font-size: 90px;
 }
+
+input[type=radio] {
+    transform: scale(1.2);
+}

@@ -29,7 +29,7 @@
 
 	{% if answer != response.answer and answer.correct and test.solution %}
 
-	<label for='{{ answer.id }}' style='color: green;'>{{ answer.name }}</label>
+	<label for='{{ answer.id }}' style='color: green;'><strong>{{ answer.name }}</strong></label>
 
 	{% else %}
 
