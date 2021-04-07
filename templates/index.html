@@ -4,33 +4,36 @@
 {% block title %}index{% endblock %}
 
 
+{% block scripts %}<script src='/static/index.js'></script>{% endblock %}
+
+
 {% block main %}
 
-<h1>TESTY</h1>
+<h1>vyplnit test</h1>
 
-{% for test in tests %}
+{% if not available %}
 
-<p>
-  {% if test.creator_id == session.id %}
+zadne testy nejsou dostupne
 
-  <a href='/results/{{ test.id }}'>vysledky</a>
-  <a href='/test/{{ test.id }}'>nahled</a>
-  
-  <strong>{{ test.name }}</strong>
+{% else %}
 
-  <a href='/editor/{{ test.id }}'>edit</a>
-  <a href='/settings/{{ test.id }}'>nastaveni</a>
+<select id='test-id'>
+  <option value='' selected disabled>testy</option>
 
-  {% else %}
+  {% for test in available %}
 
-  <a href='/test/{{ test.id }}'>vyplnit</a>
+  <option value='{{ test.id }}'>{{ test.name }}</option>
 
-  {{ test.name }}
+  {% endfor %}
+</select>
 
-  {% endif %}
-</p>
+<button id='test-redirect' class='btn btn-primary'>Vyplnit</button>
 
-{% endfor %}
+{% endif %}
+
+<hr>
+
+<h1>vytvorit test</h1>
 
 <form action='/new_test' method='post'>
   <div class='form-group'>

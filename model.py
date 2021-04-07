@@ -66,7 +66,7 @@ class Response(db.Model):
     question = db.relationship('Question')
 
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'),
-                          nullable=True)  # correct_answer_id??
+                          nullable=True)
     answer = db.relationship('Answer')
 
 

@@ -10,6 +10,22 @@ from model import User, Test, Question, Answer, Submit, Response
 from tools import login_required, creator_only
 
 
+@app.route('/tests')
+@login_required
+def tests():
+    user = User.query.filter_by(id=session['id']).first()
+
+    submits = Submit.query.filter_by(taker=user).all()
+
+    incomplete = [x.test for x in submits if x.score is None]
+    complete = [x.test for x in submits if x.score is not None]
+
+    created = Test.query.filter_by(creator=user).all()
+
+    return render_template('tests.html', incomplete=incomplete,
+                           complete=complete, created=created)
+
+
 @app.route('/solution/<int:test_id>')
 @login_required
 def solution(test_id):
@@ -149,7 +165,7 @@ def save_settings(test_id):
 
         db.session.commit()
 
-    return redirect('/')
+    return redirect('/tests')
 
 
 @app.route('/save_test/<int:test_id>', methods=['POST'])
@@ -209,14 +225,20 @@ def new_test():
 
     db.session.commit()
 
-    return redirect('/')
+    return redirect('/tests')
 
 
 @app.route('/')
 @login_required
 def index():
-    tests = Test.query.all()
-    return render_template('index.html', tests=tests)
+    user = User.query.filter_by(id=session['id']).first()
+    tests = Test.query.filter_by(access=True).all()
+
+    available = [x for x in tests
+                 if not Submit.query.filter_by(test=x, taker=user).first()
+                 and x.creator != user]
+
+    return render_template('index.html', available=available)
 
 
 @app.route('/profile')

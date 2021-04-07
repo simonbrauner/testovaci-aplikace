@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+
+{% block title %}testy{% endblock %}
+
+
+{% block main %}
+
+<h1>Nedokoncene</h1>
+
+{% if not incomplete %}<p>zadne nedokoncene testy</p>{% endif %}
+
+{% for test in incomplete %}
+
+<p>
+  <a href='/test/{{ test.id }}'>dokoncit</a>
+
+  <strong>{{ test.name }}</strong>
+</p>
+
+{% endfor %}
+
+<h1>Vyplnene</h1>
+
+{% if not complete %}<p>zadne vyplnene testy</p>{% endif %}
+
+{% for test in complete %}
+
+<p>
+  {% if test.solution %}
+
+  <a href='/test/{{ test.id }}'>vysledky</a>
+
+  {% endif %}
+
+  <strong>{{ test.name }}</strong>
+</p>
+
+{% endfor %}
+
+<h1>Vytvorene</h1>
+
+{% if not created %}<p>zadne vytvorene testy</p>{% endif %}
+
+{% for test in created %}
+
+<p>
+  <a href='/results/{{ test.id }}'>vysledky</a>
+  <a href='/test/{{ test.id }}'>nahled</a>
+  
+  <strong>{{ test.name }}</strong>
+
+  <a href='/editor/{{ test.id }}'>edit</a>
+  <a href='/settings/{{ test.id }}'>nastaveni</a>
+</p>
+
+{% endfor %}
+
+{% endblock %}
