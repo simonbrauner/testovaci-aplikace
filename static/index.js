@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-
     // redirect to test
-    document.getElementById('test-redirect').addEventListener('click', function() {
-	let test_id = document.getElementById('test-id').value;
+    let redirect_button = document.getElementById('test-redirect');
+    if (redirect_button) {
+	redirect_button.addEventListener('click', function() {
+	    let test_id = document.getElementById('test-id').value;
 
-	if (test_id) {
-	    window.location = '../test/' + test_id;
-	}
-    });
+	    if (test_id) {
+		window.location = '../test/' + test_id;
+	    }
+	});
+    }
 });

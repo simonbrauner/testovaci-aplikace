@@ -4,6 +4,9 @@
 {% block title %}nastaveni{% endblock %}
 
 
+{% block scripts %}<script src='/static/settings.js'></script>{% endblock %}
+
+
 {% block main %}
 
 <h1>{{ test.name }}</h1>
@@ -62,11 +65,14 @@
 
 <hr>
 
-<p>vstup ze souboru</p>
+<p>vstup ze souboru (JSON)</p>
+
+<input type='file' id='file-input'>
+<button class='btn btn-primary' id='visible-submit'>Nahrat</button>
 
 <form action='/save_test/{{ test.id }}' method='post'>
-  <input type='text' name='test-json' placeholder='JSON' autocomplete='false' required>
-  <button class='btn btn-primary' type='submit'>Ulozit</button>
+  <input type='text' name='test-json' id='test-json' hidden>
+  <button type='submit' id='hidden-submit' hidden></button>
 </form>
 
 {% endblock %}

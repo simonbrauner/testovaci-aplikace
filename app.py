@@ -203,7 +203,7 @@ def save_test(test_id):
 
     db.session.commit()
 
-    return redirect('/')
+    return redirect('/tests')
 
 
 @app.route('/editor/<int:test_id>')
