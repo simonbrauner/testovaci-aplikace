@@ -184,6 +184,9 @@ def save_test(test_id):
 
     # adding new
     test_json = request.form.get('test-json')
+    if not test_json:
+        return redirect('/tests')
+
     test_dict = loads(test_json)
 
     for question_dict in test_dict['questions']:

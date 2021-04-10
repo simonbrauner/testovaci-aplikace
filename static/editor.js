@@ -34,7 +34,7 @@ function newAnswer(question_number, title, correct) {
 
     // changing to correct automatically
     if (correct) {
-	correct_button.click()
+	correct_button.click();
     }
 
     // delete button
@@ -123,6 +123,41 @@ function newQuestion(title) {
 }
 
 
+function loadToJSON() {
+    let test = {
+	questions: []
+    }
+
+    // questions
+    let questions = document.getElementsByClassName('question');
+
+    for (let i = 0; i < questions.length; i++) {
+	let question = {
+	    title: questions[i].childNodes[1].innerHTML,
+	    answers: []
+	}
+
+	// answers
+	let answers = document.getElementsByClassName(i)[0].childNodes;
+
+	for (let j = 0; j < answers.length - 1; j++) {
+	    let nodes = answers[j].childNodes;
+
+	    let answer = {
+		title: nodes[1].innerHTML,
+		correct: nodes[0].className == 'btn correct'
+	    }
+
+	    question.answers.push(answer);
+	}
+
+	test.questions.push(question);
+    }
+
+    return test;
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // creating question
     document.getElementById('new-question').addEventListener('click', function() {
@@ -133,41 +168,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
     });
 
-    // saving the test
+    // saving test to database
     document.getElementById('save').addEventListener('click', function() {
-	// general test info
-	let test = {
-	    questions: []
-	}
+	let test = loadToJSON();
 
-	// questions
-	let questions = document.getElementsByClassName('question');
-
-	for (let i = 0; i < questions.length; i++) {
-	    let question = {
-		title: questions[i].childNodes[1].innerHTML,
-		answers: []
-	    }
-
-	    // answers
-	    let answers = document.getElementsByClassName(i)[0].childNodes;
-
-	    for (let j = 0; j < answers.length - 1; j++) {
-		let nodes = answers[j].childNodes;
-
-		let answer = {
-		    title: nodes[1].innerHTML,
-		    correct: nodes[0].className == 'btn correct'
-		}
-
-		question.answers.push(answer);
-	    }
-
-	    test.questions.push(question);
-	}
-
-	// submitting
 	document.getElementById('secret-input').value = JSON.stringify(test);
 	document.getElementById('secret-button').click()
+    });
+
+    // saving test to JSON file
+    document.getElementById('to-json').addEventListener('click', function() {
+	let test = loadToJSON();
+
+	let anchor = document.createElement('A');
+	anchor.download = document.querySelector('H1').innerHTML + '.json';
+
+	let blob = new Blob([JSON.stringify(test, null, 2)], {type: 'text/json'});
+	anchor.href = URL.createObjectURL(blob);
+
+	anchor.click();
     });
 });
