@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let file_input = document.getElementById('file-input');
     file_input.addEventListener('change', function(event) {
 	let reader = new FileReader();
-	reader.onload = function() {
+	reader.addEventListener('onload', function() {
 	    document.getElementById('test-json').value = reader.result;
-	}
+	});
 	reader.readAsText(file_input.files[0]);
     });
 

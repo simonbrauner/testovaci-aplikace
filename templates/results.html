@@ -4,6 +4,9 @@
 {% block title %}vysledky{% endblock %}
 
 
+{% block scripts %}<script src='/static/results.js'></script>{% endblock %}
+
+
 {% block main %}
 
 <div class='container'>
@@ -20,11 +23,11 @@
       {% for submit in submits %}
 
       <tr>
-	<td>{{ submit.taker.name }}</td>
+	<td class='name'>{{ submit.taker.name }}</td>
 
-	{% if submit.score %}
+	{% if submit.score or submit.score == 0 %}
 
-	<td>{{ submit.score }}</td>
+	<td class='score'>{{ submit.score }}</td>
 
 	{% else %}
 
@@ -37,5 +40,7 @@
     </tbody>
   </table>
 </div>
+
+<button class='btn btn-primary' id='to-csv'>Ulozit do souboru</button>
 
 {% endblock %}
