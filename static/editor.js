@@ -102,11 +102,20 @@ function newQuestion(title) {
     answer_button.className = 'btn btn-primary';
     answer_button.appendChild(document.createTextNode('Pridat odpoved'));
 
+    // pressing enter to add answer
+    answer_title.addEventListener('keyup', function(event) {
+	if (event.keyCode == 13) {
+	    answer_button.click();
+	}
+    });
+
+    // adding answer
     answer_button.addEventListener('click', function() {
 	if (answer_title.value) {
 	    newAnswer(question.id, answer_title.value, false);
 	    answer_title.value = '';
 	}
+	answer_title.focus();
     });
 
     // appending to question
@@ -120,6 +129,9 @@ function newQuestion(title) {
 
     // appending to the document
     document.getElementById('questions').appendChild(question);
+
+    // focus
+    answer_title.focus();
 }
 
 
@@ -187,5 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	anchor.href = URL.createObjectURL(blob);
 
 	anchor.click();
+    });
+
+    // pressing enter to add question
+    document.getElementById('question-title').addEventListener('keyup', function(event) {
+	if (event.keyCode == 13) {
+	    document.getElementById('new-question').click();
+	}
     });
 });
