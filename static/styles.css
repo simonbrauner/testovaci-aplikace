@@ -5,3 +5,8 @@ h1 {
 input[type=radio] {
     transform: scale(1.2);
 }
+
+main {
+    text-align: center;
+    list-style-position: inside;
+}
