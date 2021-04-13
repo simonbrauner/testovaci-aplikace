@@ -5,7 +5,7 @@
     <meta charset='utf-8'>
     <meta name='viewport' content='initial-scale=1, width=device-width'>
 
-    <title>{% block title %}{% endblock %}</title>
+    <title>Testovací aplikace - {% block title %}{% endblock %}</title>
 
     <link href='/static/favicon.ico' rel='icon'>
 
@@ -23,10 +23,10 @@
       {% if session.id %}
 
       <ul class='navbar-nav me-auto'>
-	<a class='navbar-brand' href='/'>index</a>
+	<a class='navbar-brand' href='/'>Testovací aplikace</a>
 
 	<li class='nav-item'>
-	  <a class='nav-link' href='/tests'>testy</a>
+	  <a class='nav-link' href='/tests'>Testy</a>
 	</li>
       </ul>
 
@@ -36,21 +36,21 @@
 	{% if session.id %}
 
 	<li class='nav-item'>
-	  <a class='nav-link' href='/profile'>uzivatel</a>
+	  <a class='nav-link' href='/profile'>Uživatel</a>
 	</li>
 
 	<li class='nav-item'>
-	  <a class='nav-link' href='/logout'>odhlasit</a>
+	  <a class='nav-link' href='/logout'>Odhlásit se</a>
 	</li>
 
 	{% else %}
 
 	<li class='nav-item'>
-	  <a class='nav-link' href='/login'>login</a>
+	  <a class='nav-link' href='/login'>Přihlásit</a>
 	</li>
 
 	<li class='nav-item'>
-	  <a class='nav-link' href='/register'>register</a>
+	  <a class='nav-link' href='/register'>Registrovat</a>
 	</li>
 
 	{% endif %}

@@ -1,23 +1,23 @@
 {% extends "layout.html" %}
 
 
-{% block title %}login{% endblock %}
+{% block title %}přihlášení{% endblock %}
 
 
 {% block main %}
 
-<h1>login</h1>
+<h1>přihlášení</h1>
 
 <form action='/login' method='post'>
   <div class='form-group'>
-    <input type='text' name='username' placeholder='Uzivatelske jmeno' autocomplete='off' autofocus required>
+    <input type='text' name='username' placeholder='Uživatelské jméno' autocomplete='off' autofocus>
   </div>
 
   <div class='form-group'>
-    <input type='password' name='password' placeholder='Heslo' autocomplete='off' required>
+    <input type='password' name='password' placeholder='Heslo' autocomplete='off'>
   </div>
 
-  <button type='submit' class='btn btn-primary'>Prihlasit</button>
+  <button type='submit' class='btn btn-primary'>Přihlásit</button>
 </form>
 
 {% if error %}

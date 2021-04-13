@@ -1,28 +1,40 @@
 {% extends "layout.html" %}
 
 
-{% block title %}user{% endblock %}
+{% block title %}uživatel{% endblock %}
 
 
 {% block main %}
 
-<div class='container'>
-  <h1>UZIVATEL</h1>
-  
-  <table class='table'>
-    <thead>
-      <tr>
-	<th>Uzivatelske jmeno</th>
-	<th>Jmeno</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-	<td>{{ user.username }}</td>
-	<td>{{ user.name }}</td>
-      </tr>
-    </tbody>
-  </table>
+<h1>uživatel</h1>
+
+<p><strong>Uživatelské jméno: {{ user.username }}</strong></p>
+<p><strong>Jméno: {{ user.name }}</strong></p>
+
+<hr>
+
+<form action='/change_password' method='post'>
+  <div class='form-group'>
+    <input type='password' name='old' placeholder='Staré heslo' autocomplete='off'>
+  </div>
+
+  <div class='form-group'>
+    <input type='password' name='new' placeholder='Nové heslo' autocomplete='off'>
+  </div>
+
+  <div class='form-group'>
+    <input type='password' name='confirmation' placeholder='Nové heslo znovu' autocomplete='off'>
+  </div>
+
+  <button type='submit' class='btn btn-primary'>Změnit heslo</button>
+</form>
+
+{% if error %}
+
+<div class='alert alert-warning'>
+  <strong>{{ error }}</strong>
 </div>
+
+{% endif %}
 
 {% endblock %}

@@ -244,11 +244,9 @@ def index():
     return render_template('index.html', available=available)
 
 
-@app.route('/profile')
-@login_required
-def profile():
-    user = User.query.filter_by(id=session['id']).first()
-    return render_template('profile.html', user=user)
+"""
+user accounts
+"""
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -259,13 +257,19 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
 
+    if not username:
+        return render_template('login.html', error='Chybí uživatelské jméno.')
+
+    if not password:
+        return render_template('login.html', error='Chybí heslo.')
+
     user = User.query.filter_by(username=username).first()
 
     if not user:
-        return render_template('login.html', error='uzivatel neexistuje')
+        return render_template('login.html', error='Uživatel neexistuje.')
 
     if not check_password_hash(user.password, password):
-        return render_template('login.html', error='spatne heslo')
+        return render_template('login.html', error='Špatné heslo.')
 
     session['id'] = user.id
 
@@ -275,6 +279,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
+
     return redirect('/login')
 
 
@@ -288,25 +293,35 @@ def register():
     password = request.form.get('password')
     confirmation = request.form.get('confirmation')
 
-    if len(username) > 128:
+    if not username:
         return render_template('register.html',
-                               error='uzivatelske jmeno je moc dlouhe')
+                               error='Chybí uživatelské jméno.')
 
-    if len(name) > 128:
-        return render_template('register.html',
-                               error='jmeno je moc dlouhe')
+    if not name:
+        return render_template('register.html', error='Chybí jméno.')
 
-    if len(password) > 128:
+    if not password:
+        return render_template('register.html', error='Chybí heslo.')
+
+    if not confirmation:
+        return render_template('register.html', error='Chybí heslo podruhé.')
+
+    if ' ' in username or ',' in username:
         return render_template('register.html',
-                               error='heslo je moc dlouhe')
+                               error='Uživatelské jméno nesmí obsahovat\
+                               čárky ani mezery.')
+
+    if ',' in name:
+        return render_template('register.html',
+                               error='Jméno nesmí obsahovat čárky.')
 
     if User.query.filter_by(username=username).first():
         return render_template('register.html',
-                               error='takove uzivatelske jmeno uz existuje')
+                               error='Takové uživatelské jméno už existuje.')
 
     if password != confirmation:
         return render_template('register.html',
-                               error='hesla nejsou stejna')
+                               error='Hesla nejsou stejná')
 
     user = User(username=username, name=name,
                 password=generate_password_hash(password))
@@ -315,3 +330,48 @@ def register():
     db.session.commit()
 
     return redirect('/login')
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    user = User.query.filter_by(id=session['id']).first()
+
+    return render_template('profile.html', user=user)
+
+
+@app.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    user = User.query.filter_by(id=session['id']).first()
+
+    old = request.form.get('old')
+    new = request.form.get('new')
+    confirmation = request.form.get('confirmation')
+
+    if not old:
+        return render_template('profile.html', user=user,
+                               error='Chybí staré heslo.')
+
+    if not new:
+        return render_template('profile.html', user=user,
+                               error='Chybí nové heslo.')
+
+    if not confirmation:
+        return render_template('profile.html', user=user,
+                               error='Chybí nové heslo podruhé.')
+
+    if not check_password_hash(user.password, old):
+        return render_template('profile.html', user=user,
+                               error='Špatné staré heslo.')
+
+    if new != confirmation:
+        return render_template('profile.html', user=user,
+                               error='Nová hesla nejsou stejná')
+
+    user.password = generate_password_hash(new)
+
+    db.session.add(user)
+    db.session.commit()
+
+    return redirect('/')
