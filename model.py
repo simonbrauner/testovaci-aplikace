@@ -3,14 +3,14 @@ from config import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128), unique=True, nullable=False)
+    username = db.Column(db.String(128), nullable=False, unique=True)
     name = db.Column(db.String(128), nullable=False)
     password = db.Column(db.String(128), nullable=False)
 
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False, unique=True)
 
     parts = db.Column(db.Integer, default=0)
     solution = db.Column(db.Boolean, default=1)

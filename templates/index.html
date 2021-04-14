@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 
-{% block title %}index{% endblock %}
+{% block title %}testovací aplikace{% endblock %}
 
 
 {% block scripts %}<script src='/static/index.js'></script>{% endblock %}
@@ -13,12 +13,12 @@
 
 {% if not available %}
 
-zadne testy nejsou dostupne
+Žádné testy nejsou dostupné.
 
 {% else %}
 
-<select id='test-id'>
-  <option value='' selected disabled>testy</option>
+<select id='test-id' class='form-control'>
+  <option value='' selected disabled>...</option>
 
   {% for test in available %}
 
@@ -31,14 +31,22 @@ zadne testy nejsou dostupne
 
 {% endif %}
 
-<h1>vytvorit test</h1>
+<h1>vytvořit test</h1>
 
-<form action='/new_test' method='post'>
+<form action='/' method='post'>
   <div class='form-group'>
-    <input type='text' name='name' placeholder='Jmeno testu' autocomplete='off' autofocus required>
+    <input type='text' name='name' placeholder='Jméno testu' autocomplete='off'>
   </div>
 
-  <button type='submit' class='btn btn-primary'>Vytvorit</button>
+  <button type='submit' class='btn btn-primary'>Vytvořit</button>
 </form>
+
+{% if error %}
+
+<div class='alert alert-warning'>
+  <strong>{{ error }}</strong>
+</div>
+
+{% endif %}
 
 {% endblock %}

@@ -10,22 +10,6 @@ from model import User, Test, Question, Answer, Submit, Response
 from tools import login_required, creator_only
 
 
-@app.route('/tests')
-@login_required
-def tests():
-    user = User.query.filter_by(id=session['id']).first()
-
-    submits = Submit.query.filter_by(taker=user).all()
-
-    incomplete = [x.test for x in submits if x.score is None]
-    complete = [x.test for x in submits if x.score is not None]
-
-    created = Test.query.filter_by(creator=user).all()
-
-    return render_template('tests.html', incomplete=incomplete,
-                           complete=complete, created=created)
-
-
 @app.route('/solution/<int:test_id>')
 @login_required
 def solution(test_id):
@@ -217,21 +201,12 @@ def editor(test_id):
     return render_template('editor.html', test=test)
 
 
-@app.route('/new_test', methods=['POST'])
-@login_required
-def new_test():
-    user = User.query.filter_by(id=session['id']).first()
-    name = request.form.get('name')
-
-    user.tests.append(Test(name=name))
-    db.session.add(user)
-
-    db.session.commit()
-
-    return redirect('/tests')
+"""
+navigation
+"""
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
     user = User.query.filter_by(id=session['id']).first()
@@ -241,7 +216,42 @@ def index():
                  if not Submit.query.filter_by(test=x, taker=user).first()
                  and x.creator != user]
 
-    return render_template('index.html', available=available)
+    if request.method == 'GET':
+        return render_template('index.html', available=available)
+
+    # creating new test
+    name = request.form.get('name')
+
+    if not name:
+        return render_template('index.html', available=available,
+                               error='Chybí jméno testu.')
+
+    if Test.query.filter_by(name=name).first():
+        return render_template('index.html', available=available,
+                               error='Test s takovým jménem už existuje.')
+
+    user.tests.append(Test(name=name))
+
+    db.session.add(user)
+    db.session.commit()
+
+    return redirect('/tests')
+
+
+@app.route('/tests')
+@login_required
+def tests():
+    user = User.query.filter_by(id=session['id']).first()
+
+    submits = Submit.query.filter_by(taker=user).all()
+
+    incomplete = [x.test for x in submits if x.score is None]
+    complete = [x.test for x in submits if x.score is not None]
+
+    created = Test.query.filter_by(creator=user).all()
+
+    return render_template('tests.html', incomplete=incomplete,
+                           complete=complete, created=created)
 
 
 """
@@ -332,19 +342,15 @@ def register():
     return redirect('/login')
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     user = User.query.filter_by(id=session['id']).first()
 
-    return render_template('profile.html', user=user)
+    if request.method == 'GET':
+        return render_template('profile.html', user=user)
 
-
-@app.route('/change_password', methods=['POST'])
-@login_required
-def change_password():
-    user = User.query.filter_by(id=session['id']).first()
-
+    # changing password
     old = request.form.get('old')
     new = request.form.get('new')
     confirmation = request.form.get('confirmation')

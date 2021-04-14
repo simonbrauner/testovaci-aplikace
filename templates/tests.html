@@ -6,30 +6,30 @@
 
 {% block main %}
 
-<h1>Nedokoncene</h1>
+<h1>nedokončené</h1>
 
-{% if not incomplete %}<p>zadne nedokoncene testy</p>{% endif %}
+{% if not incomplete %}<p>Žádné nedokončené testy.</p>{% endif %}
 
 {% for test in incomplete %}
 
 <p>
-  <a href='/test/{{ test.id }}'>dokoncit</a>
+  <a href='/test/{{ test.id }}'>dokončit</a>
 
   <strong>{{ test.name }}</strong>
 </p>
 
 {% endfor %}
 
-<h1>Vyplnene</h1>
+<h1>vyplňené</h1>
 
-{% if not complete %}<p>zadne vyplnene testy</p>{% endif %}
+{% if not complete %}<p>Žádné vyplňené testy.</p>{% endif %}
 
 {% for test in complete %}
 
 <p>
   {% if test.solution %}
 
-  <a href='/test/{{ test.id }}'>vysledky</a>
+  <a href='/test/{{ test.id }}'>výsledky</a>
 
   {% endif %}
 
@@ -38,20 +38,20 @@
 
 {% endfor %}
 
-<h1>Vytvorene</h1>
+<h1>vytvořené</h1>
 
-{% if not created %}<p>zadne vytvorene testy</p>{% endif %}
+{% if not created %}<p>Žádné vytvořené testy.</p>{% endif %}
 
 {% for test in created %}
 
 <p>
-  <a href='/results/{{ test.id }}'>vysledky</a>
-  <a href='/test/{{ test.id }}'>nahled</a>
+  <a href='/results/{{ test.id }}'>výsledky</a>
+  <a href='/test/{{ test.id }}'>náhled</a>
   
   <strong>{{ test.name }}</strong>
 
-  <a href='/editor/{{ test.id }}'>edit</a>
-  <a href='/settings/{{ test.id }}'>nastaveni</a>
+  <a href='/editor/{{ test.id }}'>upravit</a>
+  <a href='/settings/{{ test.id }}'>nastavení</a>
 </p>
 
 {% endfor %}
