@@ -7,34 +7,8 @@ from random import shuffle
 
 from config import app, db
 from model import User, Test, Question, Answer, Submit, Response
+from tools import clear_test, delete_test
 from tools import login_required, creator_only
-
-
-@app.route('/solution/<int:test_id>')
-@login_required
-def solution(test_id):
-    user = User.query.filter_by(id=session['id']).first()
-    test = Test.query.filter_by(id=test_id).first()
-    submit = Submit.query.filter_by(test=test, taker=user).first()
-
-    if not submit:
-        return redirect('/')
-
-    responses = submit.responses
-
-    return render_template('solution.html', test=test,
-                           submit=submit, responses=responses)
-
-
-@app.route('/results/<int:test_id>')
-@creator_only
-def results(test_id):
-    test = Test.query.filter_by(id=test_id).first()
-    submits = sorted(test.submits, reverse=True,
-                     key=lambda x: (x.score is not None, x.score))
-
-    return render_template('results.html', test=test,
-                           submits=submits)
 
 
 @app.route('/test/<int:test_id>', methods=['GET', 'POST'])
@@ -80,6 +54,7 @@ def test(test_id):
         else:
             return redirect(f'/solution/{test_id}')
 
+    # saving results
     score = 0
 
     for response in submit.responses:
@@ -102,21 +77,74 @@ def test(test_id):
     return redirect(f'/test/{test_id}')
 
 
-@app.route('/settings/<int:test_id>')
+@app.route('/solution/<int:test_id>')
+@login_required
+def solution(test_id):
+    user = User.query.filter_by(id=session['id']).first()
+    test = Test.query.filter_by(id=test_id).first()
+    submit = Submit.query.filter_by(test=test, taker=user).first()
+
+    if not submit or submit.score is None:
+        return redirect('/')
+
+    responses = submit.responses
+
+    return render_template('solution.html', test=test,
+                           submit=submit, responses=responses)
+
+
+"""
+creator side
+"""
+
+
+@app.route('/editor/<int:test_id>', methods=['GET', 'POST'])
+@creator_only
+def editor(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+
+    if request.method == 'GET':
+        return render_template('editor.html', test=test)
+
+    # saving test
+    test_json = request.form.get('test-json')
+    if not test_json:
+        return redirect('/tests')
+
+    clear_test(test)
+
+    test_dict = loads(test_json)
+
+    for question_dict in test_dict['questions']:
+        question = Question(name=question_dict['title'])
+
+        for answer_dict in question_dict['answers']:
+            question.answers.append(Answer(name=answer_dict['title'],
+                                           correct=answer_dict['correct']))
+
+        test.questions.append(question)
+
+    if test.parts == 0 or test.parts > len(test_dict['questions']):
+        test.parts = len(test_dict['questions'])
+
+    db.session.add(test)
+    db.session.commit()
+
+    return redirect('/tests')
+
+
+@app.route('/settings/<int:test_id>', methods=['GET', 'POST'])
 @creator_only
 def settings(test_id):
     test = Test.query.filter_by(id=test_id).first()
-    questions = test.questions
 
-    return render_template('settings.html', test=test,
-                           questions=questions)
+    if request.method == 'GET':
+        questions = test.questions
 
+        return render_template('settings.html', test=test,
+                               questions=questions)
 
-@app.route('/save_settings/<int:test_id>', methods=['POST'])
-@creator_only
-def save_settings(test_id):
-    test = Test.query.filter_by(id=test_id).first()
-
+    # saving settings
     parts = request.form.get('parts')
     solution = False
     access = False
@@ -152,53 +180,28 @@ def save_settings(test_id):
     return redirect('/tests')
 
 
-@app.route('/save_test/<int:test_id>', methods=['POST'])
+@app.route('/delete/<int:test_id>', methods=['GET', 'POST'])
 @creator_only
-def save_test(test_id):
-    test = Test.query.filter_by(id=test_id).first()
+def delete(test_id):
+    test = test = Test.query.filter_by(id=test_id).first()
 
-    # deleting old
-    for question in test.questions:
-        for answer in question.answers:
-            db.session.delete(answer)
+    if request.method == 'GET':
+        return render_template('delete.html', test=test)
 
-        db.session.delete(question)
+    delete_test(test)
 
-    db.session.commit()
-
-    # adding new
-    test_json = request.form.get('test-json')
-    if not test_json:
-        return redirect('/tests')
-
-    test_dict = loads(test_json)
-
-    for question_dict in test_dict['questions']:
-        question = Question(name=question_dict['title'])
-
-        for answer_dict in question_dict['answers']:
-            question.answers.append(Answer(name=answer_dict['title'],
-                                           correct=answer_dict['correct']))
-
-        test.questions.append(question)
-
-    # automatic testion count
-    if test.parts == 0 or test.parts > len(test_dict['questions']):
-        test.parts = len(test_dict['questions'])
-
-    db.session.add(test)
-
-    db.session.commit()
-
-    return redirect('/tests')
+    return redirect('/')
 
 
-@app.route('/editor/<int:test_id>')
+@app.route('/results/<int:test_id>')
 @creator_only
-def editor(test_id):
+def results(test_id):
     test = Test.query.filter_by(id=test_id).first()
+    submits = sorted(test.submits, reverse=True,
+                     key=lambda x: (x.score is not None, x.score))
 
-    return render_template('editor.html', test=test)
+    return render_template('results.html', test=test,
+                           submits=submits)
 
 
 """

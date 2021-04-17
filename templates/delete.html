@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+
+{% block title %}{{ test.name }}{% endblock %}
+
+
+{% block main %}
+
+<h1>odstranit test {{ test.name }}?</h1>
+
+<p>Po stisknutí tlačítka se test odstraní.</p>
+
+<p>
+  Tento test
+
+  {% if not test.submits %}
+
+  nevyplnil nikdo.
+
+  {% elif test.submits | length == 1 %}
+
+  vyplnil jeden uživatel.
+  S testem se odstraní i jeho výsledky.
+
+  {% elif test.submits | length < 5 %}
+
+  vyplnili {{ test.submits | length }} uživatelé.
+  S testem se odstraní i jejich výsledky.
+
+  {% else %}
+
+  vyplnilo {{ test.submits | length }} uživatelů.
+  S testem se odstraní i jejich výsledky.
+
+  {% endif %}
+</p>
+
+<hr>
+
+<form action='/delete/{{ test.id }}' method='post'>
+  <button class='btn btn-primary' type='submit'>Odstranit</button>
+</form>
+
+{% endblock %}

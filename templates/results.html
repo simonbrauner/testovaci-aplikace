@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 
-{% block title %}vysledky{% endblock %}
+{% block title %}{{ test.name }}{% endblock %}
 
 
 {% block scripts %}<script src='/static/results.js'></script>{% endblock %}
@@ -15,8 +15,8 @@
   <table class='table table-striped'>
     <thead>
       <tr>
-	<th>Uzivatel</th>
-	<th>Pocet bodu</th>
+	<th>Uživatel</th>
+	<th>Počet bodů</th>
       </tr>
     </thead>
     <tbody>
@@ -41,6 +41,6 @@
   </table>
 </div>
 
-<button class='btn btn-primary' id='to-csv'>Ulozit do souboru</button>
+<button class='btn btn-primary' id='to-csv'>Uložit do souboru</button>
 
 {% endblock %}

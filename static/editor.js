@@ -95,12 +95,12 @@ function newQuestion(title) {
     // creating input and button for new answers
     let answer_title = document.createElement('INPUT');
     answer_title.type = 'text';
-    answer_title.placeholder = 'Odpoved';
+    answer_title.placeholder = 'Odpověď';
     answer_title.autocomplete = 'off';
 
     let answer_button = document.createElement('BUTTON');
     answer_button.className = 'btn btn-primary';
-    answer_button.appendChild(document.createTextNode('Pridat odpoved'));
+    answer_button.appendChild(document.createTextNode('Přidat odpověď'));
 
     // pressing enter to add answer
     answer_title.addEventListener('keyup', function(event) {

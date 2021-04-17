@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 
-{% block title %}nastaveni{% endblock %}
+{% block title %}{{ test.name }}{% endblock %}
 
 
 {% block scripts %}<script src='/static/settings.js'></script>{% endblock %}
@@ -11,14 +11,14 @@
 
 <h1>{{ test.name }}</h1>
 
-<form action='/save_settings/{{ test.id }}' method='post'>
+<form action='/settings/{{ test.id }}' method='post'>
 
-  <label for='length'>celkem otazek: </label>
+  <label for='length'>celkem otázek:</label>
   <input type='text' value='{{ questions | length }}' id='length' readonly>
 
   <br>
 
-  <label for='parts'>otazek v testu: </label>
+  <label for='parts'>otázek v testu:</label>
 
   {% if test.parts %}
 
@@ -32,7 +32,7 @@
 
   <br>
 
-  <label for='solution'>zobrazovat vysledky testu: </label>
+  <label for='solution'>zobrazovat výsledky testu:</label>
 
   {% if test.solution %}
 
@@ -46,7 +46,7 @@
 
   <br>
 
-  <label for='access'>test je pristupny: </label>
+  <label for='access'>test je přístupný:</label>
 
   {% if test.access %}
 
@@ -60,7 +60,7 @@
 
   <br>
 
-  <button type='submit' class='btn btn-primary'>Ulozit</button>
+  <button type='submit' class='btn btn-primary'>Uložit</button>
 </form>
 
 <hr>
@@ -68,11 +68,19 @@
 <p>vstup ze souboru (JSON)</p>
 
 <input type='file' id='file-input'>
-<button class='btn btn-primary' id='visible-submit'>Nahrat</button>
+<button class='btn btn-primary' id='visible-submit'>Nahrát</button>
 
-<form action='/save_test/{{ test.id }}' method='post'>
+<form action='/editor/{{ test.id }}' method='post'>
   <input type='text' name='test-json' id='test-json' hidden>
   <button type='submit' id='hidden-submit' hidden></button>
+</form>
+
+<hr>
+
+<p>odstranit test</p>
+
+<form action='/delete/{{ test.id }}' method='get'>
+  <button class='btn btn-primary' type='submit'>Odstranit</button>
 </form>
 
 {% endblock %}
