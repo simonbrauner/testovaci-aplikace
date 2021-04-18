@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // test results to csv file
     document.getElementById('to-csv').addEventListener('click', function() {
 	let results = [
-	    ['uzivatel', 'pocet bodu']
+	    ['uživatel', 'počet bodů']
 	];
 
 	let names = document.getElementsByClassName('name');

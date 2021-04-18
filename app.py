@@ -24,6 +24,7 @@ def test(test_id):
 
     if request.method == 'GET':
         if not submit:
+            # generating test
             questions = test.questions.copy()
 
             if not questions:
@@ -39,19 +40,20 @@ def test(test_id):
                     submit.responses.append(Response(question_id=question.id))
 
                     db.session.add(submit)
-
                     db.session.commit()
 
             return render_template('test.html', user=user,
                                    test=test, questions=questions)
 
         if submit.score is None:
+            # test was generated but not finished
             questions = [response.question for response in submit.responses]
 
             return render_template('test.html', user=user,
                                    test=test, questions=questions)
 
         else:
+            # test finished and showing solution
             return redirect(f'/solution/{test_id}')
 
     # saving results
@@ -71,7 +73,6 @@ def test(test_id):
     submit.score = score
 
     db.session.add(submit)
-
     db.session.commit()
 
     return redirect(f'/test/{test_id}')
@@ -174,7 +175,6 @@ def settings(test_id):
 
     if any([parts, solution, access]):
         db.session.add(test)
-
         db.session.commit()
 
     return redirect('/tests')
