@@ -46,7 +46,7 @@
 
   <br>
 
-  <label for='access'>test je přístupný:</label>
+  <label for='access'>test je přístupný všem přihlasenym uživatelům:</label>
 
   {% if test.access %}
 
@@ -59,6 +59,32 @@
   {% endif %}
 
   <br>
+
+  <label for='private-access'>test je přístupný odkazem:</label>
+
+  {% if test.private_access %}
+
+  <input type='checkbox' name='private-access' id='access' checked>
+
+  {% else %}
+
+  <input type='checkbox' name='private-access' id='access'>
+
+  {% endif %}
+
+  <br>
+
+  {% if test.link %}
+
+  <label for='test-link'>odkaz na test:</label>
+
+  <a id='test-link' target='_blank'></a>
+
+  <script>setTestLink('{{ test.id }}', '{{ test.link }}');</script>
+
+  <br>
+
+  {% endif %}
 
   <button type='submit' class='btn btn-primary'>Uložit</button>
 </form>

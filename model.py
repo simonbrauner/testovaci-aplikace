@@ -3,22 +3,25 @@ from config import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128), nullable=False, unique=True)
-    name = db.Column(db.String(128), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
+    username = db.Column(db.String(128), nullable=True)
+    name = db.Column(db.String(128), nullable=True)
+    password = db.Column(db.String(128), nullable=True)
 
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False, unique=True)
+    name = db.Column(db.String(128), nullable=False)
 
     parts = db.Column(db.Integer, default=0)
     solution = db.Column(db.Boolean, default=1)
     access = db.Column(db.Boolean, default=0)
+    private_access = db.Column(db.Boolean, default=0)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                            nullable=False)
     creator = db.relationship('User', backref='tests', lazy=True)
+
+    link = db.Column(db.String(128), nullable=True)
 
 
 class Question(db.Model):
@@ -66,7 +69,7 @@ class Response(db.Model):
     question = db.relationship('Question')
 
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'),
-                          nullable=True)
+                          nullable=False)
     answer = db.relationship('Answer')
 
 

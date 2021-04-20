@@ -1,9 +1,15 @@
 from flask import session, redirect
 
 from functools import wraps
+from random import choices
+from string import ascii_letters as letters, digits
 
 from config import db
 from model import Test
+
+
+def create_test_link():
+    return ''.join(choices(letters + digits, k=40))
 
 
 def clear_test(test):
@@ -21,7 +27,13 @@ def delete_test(test):
         for response in submit.responses:
             db.session.delete(response)
 
+        taker = submit.taker
+
         db.session.delete(submit)
+
+        # deleting anonymous accounts
+        if not taker.username:
+            db.session.delete(taker)
 
     clear_test(test)
 

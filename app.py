@@ -7,8 +7,84 @@ from random import shuffle
 
 from config import app, db
 from model import User, Test, Question, Answer, Submit, Response
+from tools import create_test_link
 from tools import clear_test, delete_test
 from tools import login_required, creator_only
+
+
+@app.route('/test/<int:test_id>/<string:link>', methods=['GET', 'POST'])
+def test_without_login(test_id, link):
+    test = Test.query.filter_by(id=test_id).first()
+
+    if not test or link != test.link or not test.private_access:
+        return 'Špatný odkaz na test.'
+
+    if request.method == 'GET':
+        questions = test.questions.copy()
+
+        shuffle(questions)
+        questions = questions[:test.parts]
+
+        # creating anonymous user
+        user = User()
+        submit = Submit(test=test, taker=user)
+
+        for question in questions:
+            submit.responses.append(Response(question_id=question.id))
+
+        db.session.add(user)
+        db.session.add(submit)
+        db.session.commit()
+
+        # remembering user
+        session['anonymous-id'] = user.id
+
+        return render_template('test_without_login.html',
+                               user=user, test=test,
+                               questions=questions, link=link)
+
+    # saving results
+    if not test.solution or 'anonymous-id' not in session:
+        return 'Test byl vyplňen.'
+
+    user = User.query.filter_by(id=session['anonymous-id']).first()
+
+    # forgetting
+    session.clear()
+
+    name = request.form.get('name')
+
+    if name:
+        user.name = name
+
+        db.session.add(user)
+        db.session.commit()
+
+    submit = Submit.query.filter_by(test=test, taker=user).first()
+
+    score = 0
+
+    for response in submit.responses:
+        answer_id = request.form.get(str(response.question_id))
+
+        if answer_id:
+            answer = Answer.query.filter_by(id=answer_id).first()
+
+            if answer.correct:
+                score += 1
+
+            response.answer = answer
+
+    submit.score = score
+
+    db.session.add(submit)
+    db.session.commit()
+
+    responses = submit.responses
+
+    # NOT available
+    return render_template('solution.html', test=test,
+                           submit=submit, responses=responses)
 
 
 @app.route('/test/<int:test_id>', methods=['GET', 'POST'])
@@ -39,8 +115,8 @@ def test(test_id):
                 for question in questions:
                     submit.responses.append(Response(question_id=question.id))
 
-                    db.session.add(submit)
-                    db.session.commit()
+                db.session.add(submit)
+                db.session.commit()
 
             return render_template('test.html', user=user,
                                    test=test, questions=questions)
@@ -149,6 +225,7 @@ def settings(test_id):
     parts = request.form.get('parts')
     solution = False
     access = False
+    private_access = False
 
     if parts:
         try:
@@ -173,7 +250,53 @@ def settings(test_id):
         test.access = not test.access
         access = True
 
-    if any([parts, solution, access]):
+        # deleting unfinished submits
+        if not test.access:
+            change = False
+
+            submits = Submit.query.filter_by(test=test).all()
+
+            for submit in submits:
+                if submit.score is None:
+                    change = True
+
+                    for response in submit.responses:
+                        db.session.delete(response)
+
+                    db.session.delete(submit)
+
+            if change:
+                db.session.commit()
+
+    if bool(request.form.get('private-access')) != test.private_access:
+        test.private_access = not test.private_access
+        private_access = True
+
+        if not test.link:
+            test.link = create_test_link()
+
+        # deleting useless accounts
+        if not test.private_access:
+            change = False
+
+            submits = Submit.query.filter_by(test=test).all()
+
+            for submit in submits:
+                if submit.taker.name is None:
+                    change = True
+
+                    for response in submit.responses:
+                        db.session.delete(response)
+
+                    taker = submit.taker
+
+                    db.session.delete(submit)
+                    db.session.delete(taker)
+
+            if change:
+                db.session.commit()
+
+    if any([parts, solution, access, private_access]):
         db.session.add(test)
         db.session.commit()
 
@@ -185,8 +308,10 @@ def settings(test_id):
 def delete(test_id):
     test = test = Test.query.filter_by(id=test_id).first()
 
+    count = len([x for x in test.submits if x.score])
+
     if request.method == 'GET':
-        return render_template('delete.html', test=test)
+        return render_template('delete.html', test=test, count=count)
 
     delete_test(test)
 

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+
+{% block title %}{{ test.name }}{% endblock %}
+
+
+{% block main %}
+
+<h1>{{ test.name }}</h1>
+
+<form action='/test/{{ test.id }}/{{ link }}' method='post'>
+  <div class='form-group'>
+    <input type='text' name='name' placeholder='Jméno a příjmení' autocomplete='off' autofocus required>
+  </div>
+
+  <hr>
+
+  <ol>
+    {% for question in questions %}
+
+    <li>
+      <strong>{{ question.name }}</strong>
+
+      {% for answer in question.answers %}
+
+      <div>
+	<input type='radio' name='{{ question.id }}' value='{{ answer.id }}' id='{{ answer.id }}'>
+	<label for='{{ answer.id }}'>{{ answer.name }}</label>
+      </div>
+
+      {% endfor %}
+    </li>
+
+    {% endfor %}
+  </ol>
+
+  <button type='submit' class='btn btn-primary'>Odevzdat</button>
+</form>
+
+{% endblock %}

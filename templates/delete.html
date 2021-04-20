@@ -13,16 +13,16 @@
 <p>
   Tento test
 
-  {% if not test.submits %}
+  {% if not count %}
 
   nevyplnil nikdo.
 
-  {% elif test.submits | length == 1 %}
+  {% elif count == 1 %}
 
   vyplnil jeden uživatel.
   S testem se odstraní i jeho výsledky.
 
-  {% elif test.submits | length < 5 %}
+  {% elif count < 5 %}
 
   vyplnili {{ test.submits | length }} uživatelé.
   S testem se odstraní i jejich výsledky.

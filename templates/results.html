@@ -22,6 +22,8 @@
     <tbody>
       {% for submit in submits %}
 
+      {% if submit.score %}
+
       <tr>
 	<td class='name'>{{ submit.taker.name }}</td>
 
@@ -35,6 +37,8 @@
 
 	{% endif %}
       </tr>
+
+      {% endif %}
 
       {% endfor %}
     </tbody>

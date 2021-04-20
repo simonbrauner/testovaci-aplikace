@@ -1,3 +1,14 @@
+function setTestLink(id, link) {
+    let test_link = document.getElementById('test-link');
+
+    let link_string = window.location.href.split('settings')[0];
+    link_string += 'test/' + id + '/' + link;
+
+    test_link.innerHTML = link_string;
+    test_link.href = link_string;
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // loading test from JSON
     let file_input = document.getElementById('file-input');
