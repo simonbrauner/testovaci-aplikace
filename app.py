@@ -44,7 +44,7 @@ def test_without_login(test_id, link):
                                questions=questions, link=link)
 
     # saving results
-    if not test.solution or 'anonymous-id' not in session:
+    if 'anonymous-id' not in session:
         return 'Test byl vyplňen.'
 
     user = User.query.filter_by(id=session['anonymous-id']).first()
@@ -80,9 +80,11 @@ def test_without_login(test_id, link):
     db.session.add(submit)
     db.session.commit()
 
+    if not test.solution:
+        return 'Test byl vyplňen.'
+
     responses = submit.responses
 
-    # NOT available
     return render_template('solution.html', test=test,
                            submit=submit, responses=responses)
 
