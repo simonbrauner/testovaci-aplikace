@@ -20,25 +20,12 @@
       </tr>
     </thead>
     <tbody>
-      {% for submit in submits %}
-
-      {% if submit.score %}
+      {% for submit in complete %}
 
       <tr>
 	<td class='name'>{{ submit.taker.name }}</td>
-
-	{% if submit.score or submit.score == 0 %}
-
 	<td class='score'>{{ submit.score }}</td>
-
-	{% else %}
-
-	<td>-</td>
-
-	{% endif %}
       </tr>
-
-      {% endif %}
 
       {% endfor %}
     </tbody>

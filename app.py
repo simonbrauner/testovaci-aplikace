@@ -322,11 +322,12 @@ def delete(test_id):
 @creator_only
 def results(test_id):
     test = Test.query.filter_by(id=test_id).first()
-    submits = sorted(test.submits, reverse=True,
-                     key=lambda x: (x.score is not None, x.score))
+
+    complete = sorted([x for x in test.submits if x.score is not None],
+                      key=lambda x: x.score, reverse=True)
 
     return render_template('results.html', test=test,
-                           submits=submits)
+                           complete=complete)
 
 
 """
