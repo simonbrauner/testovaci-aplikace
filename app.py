@@ -257,7 +257,7 @@ def settings(test_id):
             submits = Submit.query.filter_by(test=test).all()
 
             for submit in submits:
-                if submit.score is None:
+                if submit.score is None and submit.taker.name is not None:
                     change = True
 
                     for response in submit.responses:
