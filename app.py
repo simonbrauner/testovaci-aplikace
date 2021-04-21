@@ -52,7 +52,7 @@ def test_without_login(test_id, link):
     # forgetting
     session.clear()
 
-    name = request.form.get('name')
+    name = request.form.get('name').replace(',', ' ')
 
     if name:
         user.name = name

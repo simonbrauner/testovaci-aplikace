@@ -9,11 +9,7 @@ from model import Test
 
 
 def create_test_link():
-    while True:
-        link = ''.join(choices(letters + digits, k=40))
-
-        if not Test.query.filter_by(link=link).first():
-            return link
+    return ''.join(choices(letters + digits, k=40))
 
 
 def clear_test(test):
