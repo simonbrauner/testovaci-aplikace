@@ -1,3 +1,15 @@
+"""
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+config.py
+
+Creating and configuring application
+and accessing database.
+"""
+
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 

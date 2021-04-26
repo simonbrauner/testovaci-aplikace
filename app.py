@@ -1,3 +1,15 @@
+"""
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+app.py
+
+The main file that determines what happens
+in which page of this web appliacation.
+"""
+
+
 from flask import request, session
 from flask import render_template, redirect
 from werkzeug.security import generate_password_hash, check_password_hash

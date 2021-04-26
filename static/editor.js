@@ -1,3 +1,14 @@
+/*
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+editor.js
+
+Editing and saving tests on editor page.
+*/
+
+
 function questionCount() {
     return document.getElementsByClassName('question').length;
 }

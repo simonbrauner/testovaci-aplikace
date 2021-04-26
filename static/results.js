@@ -1,3 +1,14 @@
+/*
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+results.js
+
+Downloading test results to csv on results page.
+*/
+
+
 function rowToCSV(row) {
     let csv_row = '';
     for (let i = 0; i < row.length - 1; i++) {

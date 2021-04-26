@@ -1,3 +1,14 @@
+"""
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+model.py
+
+Tables and columns for SQL database.
+"""
+
+
 from config import db
 
 

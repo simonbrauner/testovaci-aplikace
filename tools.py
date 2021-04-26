@@ -1,3 +1,14 @@
+"""
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+tools.py
+
+Helpful functions used in app.py.
+"""
+
+
 from flask import session, redirect
 
 from functools import wraps

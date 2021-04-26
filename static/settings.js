@@ -1,3 +1,14 @@
+/*
+Testovací aplikace
+Šimon Brauner
+26.4.2021
+
+settings.js
+
+Adding test link and loading JSON to settings page.
+*/
+
+
 function setTestLink(id, link) {
     let test_link = document.getElementById('test-link');
 
